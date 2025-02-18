@@ -61,7 +61,7 @@ public class CharacterMovement : MonoBehaviour
         {
             timeSinceStarted += Time.deltaTime; // Time.deltaTime para que o FPS não afete o ritmo da mudança
 
-            _player.transform.position = Vector2.Lerp(_initialPos, _targetPos, Mathf.Clamp(timeSinceStarted * _movementSpeed, 0, 1));
+            _player.transform.position = Vector2.Lerp(_initialPos, _targetPos, Time.deltaTime * _movementSpeed);
             SetInitialPosition(_player.transform.position.x, _player.transform.position.y);
 
             if ((Vector2)_player.transform.position == _targetPos)
