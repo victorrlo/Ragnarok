@@ -8,7 +8,6 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] Transform _player;
     float _movementSpeed = 0.5f;
     float _moveAccuracy = 0.01f;
-    bool _isWalking = false;
     Coroutine _walkCoroutine;
 
     void Start()
@@ -44,6 +43,9 @@ public class CharacterMovement : MonoBehaviour
         // para pegar posição do mouse, o melhor a usar é Camera.main.ScreenToWorlPoint(Input.mousePosition).x ou y
         // https://stackoverflow.com/questions/33900150/object-doesnt-move-with-mouse-pointer
 
+
+        // para mover o personagem a uma velocidade constante
+        // https://www.youtube.com/watch?v=EhALudpeNRQ&list=PLzskWQnp3wmYJb-a0-b-P1v0R_SFGCisn&index=7
         var targetPos = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 
         Vector2 posDifference = targetPos - (Vector2)_player.position;
