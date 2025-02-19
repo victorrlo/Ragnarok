@@ -10,15 +10,6 @@ public class CharacterMovement : MonoBehaviour
     float _moveAccuracy = 0.01f;
     Coroutine _walkCoroutine;
 
-    void Start()
-    {
-    }
-
-    void Update()
-    {
-        
-    }
-
     public void OnMouseClick(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -61,22 +52,5 @@ public class CharacterMovement : MonoBehaviour
 
         _walkCoroutine = null;
         yield return null;
-
-
-        //float timeSinceStarted = 0f;
-        //while (true)
-        //{
-        //    timeSinceStarted += Time.deltaTime; // Time.deltaTime para que o FPS não afete o ritmo da mudança
-
-        //    _player.transform.position = Vector2.Lerp(_initialPos, _targetPos, Time.deltaTime * _movementSpeed);
-        //    SetInitialPosition(_player.transform.position.x, _player.transform.position.y);
-
-        //    if ((Vector2)_player.transform.position == _targetPos)
-        //    {
-        //        yield break; // jogador chegou ao destino
-        //    }
-
-        //    yield return null; // jogador ainda não chegou ao destino, continua no próximo Frame
-        //}
     }
 }
