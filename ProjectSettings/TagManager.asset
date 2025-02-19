@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: GroundEffects
+    uniqueID: 512026413
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
