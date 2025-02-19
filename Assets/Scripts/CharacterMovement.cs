@@ -5,15 +5,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class CharacterMovement : MonoBehaviour
 {
-    [SerializeField] GameObject _player;
-    Vector2 _initialPos;
-    Vector2 _targetPos;
-    float _movementSpeed = 0.1f;
+    [SerializeField] Transform _player;
+    float _movementSpeed = 0.5f;
+    float _moveAccuracy = 0.01f;
     bool _isWalking = false;
+    Coroutine _walkCoroutine;
 
     void Start()
     {
-        SetInitialPosition(_player.transform.position.x, _player.transform.position.y);
     }
 
     void Update()
@@ -21,24 +20,15 @@ public class CharacterMovement : MonoBehaviour
         
     }
 
-    void SetInitialPosition(float x, float y)
-    {
-        _initialPos = new Vector2(x, y);
-    }
-
     public void OnMouseClick(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            if (!_isWalking)
+            if(_walkCoroutine != null)
             {
-                StartCoroutine(Walk());
+                StopCoroutine(_walkCoroutine);
             }
-            else
-            {
-                return;
-            }
-            
+            _walkCoroutine = StartCoroutine(Walk());
         }
 
         // actions usam contexto então a minha função tava sendo disparada 3x...
@@ -54,22 +44,37 @@ public class CharacterMovement : MonoBehaviour
         // para pegar posição do mouse, o melhor a usar é Camera.main.ScreenToWorlPoint(Input.mousePosition).x ou y
         // https://stackoverflow.com/questions/33900150/object-doesnt-move-with-mouse-pointer
 
-        _targetPos = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+        var targetPos = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 
-        float timeSinceStarted = 0f;
-        while (true)
+        Vector2 posDifference = targetPos - (Vector2)_player.position;
+
+        while (posDifference.magnitude > _moveAccuracy)
         {
-            timeSinceStarted += Time.deltaTime; // Time.deltaTime para que o FPS não afete o ritmo da mudança
-
-            _player.transform.position = Vector2.Lerp(_initialPos, _targetPos, Time.deltaTime * _movementSpeed);
-            SetInitialPosition(_player.transform.position.x, _player.transform.position.y);
-
-            if ((Vector2)_player.transform.position == _targetPos)
-            {
-                yield break; // jogador chegou ao destino
-            }
-
-            yield return null; // jogador ainda não chegou ao destino, continua no próximo Frame
+            _player.Translate(_movementSpeed * posDifference.normalized * Time.deltaTime);
+            posDifference = targetPos - (Vector2)_player.position;
+            yield return null;
         }
+
+        _player.position = targetPos;
+
+        _walkCoroutine = null;
+        yield return null;
+
+
+        //float timeSinceStarted = 0f;
+        //while (true)
+        //{
+        //    timeSinceStarted += Time.deltaTime; // Time.deltaTime para que o FPS não afete o ritmo da mudança
+
+        //    _player.transform.position = Vector2.Lerp(_initialPos, _targetPos, Time.deltaTime * _movementSpeed);
+        //    SetInitialPosition(_player.transform.position.x, _player.transform.position.y);
+
+        //    if ((Vector2)_player.transform.position == _targetPos)
+        //    {
+        //        yield break; // jogador chegou ao destino
+        //    }
+
+        //    yield return null; // jogador ainda não chegou ao destino, continua no próximo Frame
+        //}
     }
 }
