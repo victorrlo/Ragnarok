@@ -8,10 +8,18 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] Transform _player;
     float _movementSpeed = 0.5f;
     float _moveAccuracy = 0.01f;
+    public Transform _movePoint;
     Coroutine _walkCoroutine;
 
 
-    
+    void Start()
+    {
+        _movePoint.parent = null; // para que o movepoint se movimente independente de player
+    }
+
+    void Update()
+    {
+    }
     public void OnMouseClick(InputAction.CallbackContext context)
     {
         if (context.started)
@@ -39,18 +47,19 @@ public class CharacterMovement : MonoBehaviour
 
         // para mover o personagem a uma velocidade constante
         // https://www.youtube.com/watch?v=EhALudpeNRQ&list=PLzskWQnp3wmYJb-a0-b-P1v0R_SFGCisn&index=7
-            var targetPos = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 
-            Vector2 posDifference = targetPos - (Vector2)_player.position;
+            _movePoint.position = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
+            Vector3 posDifference = _movePoint.position - _player.position;
+            
 
             while (posDifference.magnitude > _moveAccuracy)
             {
                 _player.Translate(_movementSpeed * posDifference.normalized * Time.deltaTime);
-                posDifference = targetPos - (Vector2)_player.position;
+                posDifference = _movePoint.position - _player.position;
                 yield return null;
             }
 
-            _player.position = targetPos;
+            _player.position = _movePoint.position;
 
             _walkCoroutine = null;
             yield return null;
